@@ -43,6 +43,7 @@ export default {
     {
       this.token = this.Cookies.get('token');
       this.user_id = this.Cookies.get('user_id');
+      // console.log(this);
     },
     methods :
     {
@@ -63,24 +64,7 @@ export default {
             this.created = 'Please enter all fields !';
             return 1; 
         }
-        this.$axios.post('http://systemjwt.beta/api/createPost' , 
-        {
-            title: this.post.title,
-            body: this.post.body
-        }, 
-        {
-          headers: {
-            'Authorization': 'Bearer ' + this.token
-          }
-        }).then(data => {
-          if(data.status === 200)
-          {
-            this.created = 'Successfully Created !';
-          }
-        });
-        setTimeout(function() {
-             window.location.href = 'http://localhost:8080/#/showPost';
-        }, 2000);
+        this.$store.dispatch('createBlog', this.post);
       }
     }
 }

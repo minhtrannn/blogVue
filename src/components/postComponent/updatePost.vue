@@ -39,9 +39,9 @@ export default {
         return {
           token: '',
           updated: '',
-          id: this.$route.params.id,
           post: 
           {
+             id: this.$route.params.id,
              title: '',
              body: '',
              user_id: '',
@@ -52,7 +52,7 @@ export default {
     {
       this.token = this.Cookies.get('token');
       this.user_id = this.Cookies.get('user_id');
-      this.$axios.get('http://systemjwt.beta/api/post/' + this.id, {
+      this.$axios.get('http://systemjwt.beta/api/post/' + this.post.id, {
         headers: {
             'Authorization': 'Bearer ' + this.token
         }
@@ -62,7 +62,6 @@ export default {
           this.post.body = data.data.body;
           this.post.user_id = data.data.user_id;
       })
-      
     },
     methods :
     {
@@ -83,21 +82,7 @@ export default {
             this.updated = 'Please enter all fields !';
             return 1; 
         }
-        this.$axios.post('http://systemjwt.beta/api/updatePost/' + this.id , 
-        {
-            title: this.post.title,
-            body: this.post.body
-        }, 
-        {
-          headers: {
-            'Authorization': 'Bearer ' + this.token
-          }
-        }).then(data => {
-          if(data.status === 200)
-          {
-            this.updated = 'Successfully Updated !';
-          }
-        });
+        this.$store.dispatch('updateBlog', this.post);
       }
     }
 }
