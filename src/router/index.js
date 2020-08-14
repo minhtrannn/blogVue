@@ -6,6 +6,7 @@ import showPost from '../components/postComponent/showPost'
 import updatePost from '../components/postComponent/updatePost'
 import singlePost from '../components/postComponent/singlePost'
 import updateInfor from '../components/authComponent/updateInfor'
+import chat from '../components/chatComponent/chat'
 import Cookies from 'js-cookie';
 import store from '../store'
 Vue.use(Router);
@@ -46,6 +47,12 @@ const router = new Router({
       path: '/updateInfor/',
       name: 'updateInfor',
       component: updateInfor,
+      meta: {requiresAuth: true}
+    },
+    {
+      path: '/chat',
+      name: 'chat',
+      component: chat,
       meta: {requiresAuth: true}
     }
   ]

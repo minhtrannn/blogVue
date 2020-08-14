@@ -8,10 +8,31 @@ import axios from 'axios';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Cookies from 'js-cookie';
-import store from './store'
+import store from './store';
+
 Vue.use(Vuex);
 Vue.prototype.$axios = axios;
 Vue.prototype.Cookies = Cookies;
+
+
+//config socketio
+
+import VueSocketIO from 'vue-socket.io'
+import SocketIO from 'socket.io-client'
+
+const opts = { 
+  forceNew : true,
+  reconnection : true,
+  reconnectionAttempts : 10,
+  reconnectionDelay : 6000
+}; //Options object to pass into SocketIO
+
+Vue.use(new VueSocketIO({
+  debug: true,
+  connection: SocketIO('http://localhost:3000', opts), //options object
+})
+);
+
 
 /* eslint-disable no-new */
 const app = new Vue({

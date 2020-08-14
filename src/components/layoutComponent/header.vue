@@ -5,6 +5,7 @@
         <ul class = "nav-menu">
             <li><router-link to = '/createPost' exact>Create Post</router-link></li>
             <li><router-link to = '/showPost' exact>Show Post</router-link></li>
+            <li><router-link to = '/chat' exact>Chat</router-link></li>
         </ul>
         <form v-if = "token === '' || typeof token == 'undefined'">
             <label for = "username"></label>
