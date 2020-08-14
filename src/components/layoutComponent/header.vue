@@ -2,7 +2,7 @@
   <div>
       <nav>
         <p><router-link to = '/'>Blog</router-link></p>
-        <ul>
+        <ul class = "nav-menu">
             <li><router-link to = '/createPost' exact>Create Post</router-link></li>
             <li><router-link to = '/showPost' exact>Show Post</router-link></li>
         </ul>
@@ -14,10 +14,21 @@
             <button  v-on:click.prevent = "login">Login</button>
         </form>
         <div v-else>
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{person.name}}</button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="http://localhost:8080/#" v-on:click = "logout">Logout</a>
+            <div class="btn-group">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{name}}
+                </button>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <button class="dropdown-item" type="button">
+                        <a class="dropdown-item" href="http://localhost:8080/#" v-on:click = "logout">
+                            Logout
+                        </a>
+                    </button>
+                    <button class="dropdown-item" type="button">
+                        <a class="dropdown-item" href="http://localhost:8080/#">
+                            <router-link to = '/updateInfor' exact>Update Information</router-link>
+                        </a>
+                    </button>
                 </div>
             </div>
         </div>
@@ -28,15 +39,11 @@
 <script>
 // import Cookies from 'js.cookie.mjs'
 // import Cookies from 'js-cookie'
+
+import {mapGetters} from 'vuex';
 export default {
   data () {
     return {
-        token: '',
-        user_id: '',
-        person: 
-        {
-            name: '',
-        },
         account: 
         {
             email: '',
@@ -46,38 +53,32 @@ export default {
   },
   created()
   {
-      this.token = this.Cookies.get('token');
-      this.person.name = this.Cookies.get('name');
-      this.user_id = this.Cookies.get('user_id');
   },
   methods:
   {
-      checkAuthen:function()
-      {
-          console.log(1);
-      },
       login:function()
       {
         this.$axios.post('http://systemjwt.beta/api/login' , {
             email: this.account.email,
             password: this.account.password
         }).then(data => {
-            this.Cookies.set('token', data.data.access_token, {expires: 7});
-            this.Cookies.set('name', data.data.name, {expires: 7});
-            this.Cookies.set('user_id', data.data.user_id, {expires: 7});
-            this.person.name = data.data.name;
-            this.token = data.data.access_token;
-            this.user_id = data.data.user_id;
+            this.Cookies.set('token', data.data.access_token, {expires: 1});
+            this.$router.push('/home');
         })
       },
       logout:function()
       {
           this.Cookies.remove('token');
-          this.Cookies.remove('name');
-          this.token = '';
-          this.name = '';
-          this.user_id = '';
-      }
+          this.$store.dispatch('user/removeData');
+          this.$router.push('/');
+      },
+  },
+  computed: 
+  {
+      ...mapGetters([
+            'name',
+            'token'
+      ]),
   }
 }
 </script>
@@ -91,6 +92,11 @@ nav
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.nav-menu a 
+{
+    color: #fff;
 }
 
 nav form 
@@ -147,6 +153,27 @@ li{
 a 
 {
     text-decoration: none;
-    color: #fff;
+    color: #212529;
+}
+
+.btn
+{
+    width: 105px;
+    height: 25px;
+        display: flex;
+    align-items: center;
+}
+
+.dropdown-item 
+{
+    padding: 0;
+}
+
+button.dropdown-item 
+{
+    width: 100%;
+    text-align: end;
+    padding: 0px 12px;
+    margin: 3px 0px;
 }
 </style>

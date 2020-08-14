@@ -5,8 +5,9 @@ import createPost from '../components/postComponent/createPost'
 import showPost from '../components/postComponent/showPost'
 import updatePost from '../components/postComponent/updatePost'
 import singlePost from '../components/postComponent/singlePost'
+import updateInfor from '../components/authComponent/updateInfor'
 import Cookies from 'js-cookie';
-
+import store from '../store'
 Vue.use(Router);
 
 const router = new Router({
@@ -41,22 +42,42 @@ const router = new Router({
       component: updatePost,
       meta: {requiresAuth: true}
     },
+    {
+      path: '/updateInfor/',
+      name: 'updateInfor',
+      component: updateInfor,
+      meta: {requiresAuth: true}
+    }
   ]
 })
 
 router.beforeEach((to, from, next) => {
-  
-  if(to.matched.some(record => record.meta.requiresAuth)) {
+  if(to.matched.some(record => record.meta.requiresAuth))
+  {
     if(Cookies.get('token'))
     {
+      store.dispatch('user/getUserInfor');
       next();
+    }
+    else 
+    {
+      next('/');
     }
   }
   else 
   {
-    router.replace('/home');
+    if(Cookies.get('token'))
+    {
+      next('/home');
+    }
+    else 
+    {
+      next();
+    }
   }
-
 })
+  
+
+
 
 export default router;

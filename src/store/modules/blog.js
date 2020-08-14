@@ -1,8 +1,3 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-
-Vue.use(Vuex)
-
 import { getAllBlog } from '@/api/blog';
 import { createBlog } from '@/api/blog';
 import { updateBlog } from '@/api/blog';
@@ -13,9 +8,9 @@ const state = {
 }
 
 const mutations = {
-        SET_BLOGS: (state, blogs) => {
-            state.blogs = blogs;
-        }    
+    SET_BLOGS: (state, blogs) => {
+        state.blogs = blogs;
+    }    
 }
 
 const actions = {
@@ -42,6 +37,7 @@ const actions = {
 }
 
 export default {
+    namespaced: true,
     state,
     mutations,
     actions

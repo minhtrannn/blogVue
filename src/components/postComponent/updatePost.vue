@@ -1,5 +1,13 @@
 <template>
   <div class = 'create-post'>
+      <div>
+          <div v-if = "message == 'success'" v-bind:class = "{success: true}">
+            <p>Created Success!</p>
+          </div>
+          <div v-else-if = "message == 'fail'" v-bind:class = "{fail: true}">
+            <p>Created Fail!</p>
+          </div>
+      </div>
       <div v-if = 'user_id == post.user_id'>
         <p>Title</p>
         <input v-model.lazy = 'post.title' type = "text" name = "title" placeholder = "Title">
@@ -45,7 +53,8 @@ export default {
              title: '',
              body: '',
              user_id: '',
-          }
+          },
+          message: '',
         }
     },
     created()
@@ -82,7 +91,17 @@ export default {
             this.updated = 'Please enter all fields !';
             return 1; 
         }
-        this.$store.dispatch('updateBlog', this.post);
+        if(this.$store.dispatch('blog/updateBlog', this.post))
+        {
+          this.message = 'success';
+          setTimeout(()=> this.message = '',1000);
+          setTimeout(()=> this.$router.push({name: 'showPost'}), 2000 );
+        }
+        else 
+        {
+            this.message = 'fail';
+            setTimeout(()=> this.message = '',3000);
+        }
       }
     }
 }

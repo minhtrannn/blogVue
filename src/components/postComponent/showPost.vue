@@ -1,47 +1,73 @@
 <template>
   <div>
+    <div>
+        <div v-if = "message == 'success'" v-bind:class = "{success: !error}">
+          <p>Delete Post Success!</p>
+        </div>
+        <div v-else-if = "message == 'fail'" v-bind:class = "{fail: error} ">
+          <p>Delete Post Fail!</p>
+        </div>
+    </div>
     <div class = 'post' v-if = 'posts.length > 0' v-for = 'post, i in posts' v-bind:key='post.id'>
         <h2>{{post.title}}</h2>
         <p>{{post.body}} made at {{post.created_at}}</p>
-        <button class = 'btn btn-success' v-if = 'user_id == post.user_id'>
+        <button class = 'btn btn-success' v-if = 'userID == post.user_id'>
           <router-link :to = "'updatePost/' + post.id" >Update Post</router-link>
         </button>
-        <button class = 'btn btn-danger' v-if = 'user_id == post.user_id' v-on:click = 'deleteBlog(post.id,i)'>Delete Post</button>
+        <button class = 'btn btn-danger' v-if = 'userID == post.user_id' v-on:click = 'deleteBlog(post.id,i)'>Delete Post</button>
+    </div>
+    <div v-else>
+      <h1>Nothing to show!</h1>
     </div>
   </div>
 </template>
 
 <script>
 
-
+import {mapGetters} from 'vuex';
 
 export default {
     data () {
         return {
             token: '',
-            user_id: '',
+            error: '',
+            message: '',
         }
     },
     created()
     {
         this.token = this.Cookies.get('token');
-        this.user_id = this.Cookies.get('user_id');
         this.$store.dispatch('blog/getAllBlog');
-        // console.log(this.$store.dispatch('getAllBlog'));
     },
     computed:
     {
       posts()
       {
-        return this.$store.state.blogs;
-      }
+        return this.$store.state.blog.blogs;
+      },
+      ...mapGetters([
+            'userID'
+      ]),
     },
     methods:
     {
       deleteBlog:function(id,i)
       {
         const payload = {'id': id, 'i': i};
-        return this.$store.dispatch('deleteBlog', payload);   
+        if(this.$store.dispatch('blog/deleteBlog', payload))
+        {
+          this.error = false;
+          this.message = 'success';
+          setTimeout(()=> this.error = '',3000);
+          setTimeout(()=> this.message = '',3000);
+        }
+        else 
+        {
+          this.error = true;
+          this.message = 'fail';
+          setTimeout(()=> this.error = '',3000);
+          setTimeout(()=> this.message = '',3000);
+        } 
       }
     }
 }
